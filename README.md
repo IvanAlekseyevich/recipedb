@@ -1,2 +1,1 @@
-# foodgram-project-react
-Продуктовый помошник
+# praktikum_new_diplom
