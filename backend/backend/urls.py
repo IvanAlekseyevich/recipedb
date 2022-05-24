@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.url', namespace='users')),
     path('api/auth/', include('auth.urls', namespace='auth')),
+    path('api/tags/', include('tags.urls', namespace='tags')),
 ]
