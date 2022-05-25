@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from rest_framework import mixins, viewsets
 
-class Test1():
-    pass
+from ingredients.models import Ingredient
+from ingredients.serializers import IngredientsSerializer
 
-class Test2():
-    pass
+
+class IngredientsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientsSerializer
+    # permission_classes = [IsAdmin]

@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from rest_framework import mixins, viewsets
 
-class Test1():
-    pass
+from tags.models import Tag
+from tags.serializers import TagSerializer
 
-class Test2():
-    pass
+
+class TagViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    # permission_classes = [IsAdmin]
