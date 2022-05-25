@@ -5,8 +5,9 @@ from recipes.models import Favorite, Recipe, ShoppingCart
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = '__all__'
-    search_fields = ('author', 'name')
+    list_display = ('author', 'name')
+    search_fields = ('author', 'name', 'tags')
+    list_filter = ('author', 'name', 'tags')
     list_editable = '__all__'
 
 
