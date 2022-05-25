@@ -5,6 +5,6 @@ from tags.models import Tag
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('name', 'color', 'slug')
+    list_display = '__all__'
     search_fields = ('name', 'slug')
-    list_editable = ('name', 'slug')
+    list_editable = '__all__'
