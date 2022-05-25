@@ -4,26 +4,26 @@ from django.db import models
 
 class User(AbstractUser):
     email = models.EmailField(
-        verbose_name='электронная почта',
+        verbose_name='Адрес электронной почты',
         max_length=254,
         unique=True
     )
     username = models.CharField(
-        verbose_name='логин',
+        verbose_name='Уникальный юзернейм',
         max_length=150,
         unique=True,
         db_index=True
     )
     password = models.CharField(
-        verbose_name='пароль',
+        verbose_name='Пароль',
         max_length=150
     )
     first_name = models.CharField(
-        verbose_name='имя',
+        verbose_name='Имя',
         max_length=150
     )
     last_name = models.CharField(
-        verbose_name='фамилия',
+        verbose_name='Фамилия',
         max_length=150
     )
 
@@ -41,13 +41,13 @@ class Subscription(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='subscribers',
-        verbose_name='автор'
+        verbose_name='Автор'
     )
     subscriber = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='signed',
-        verbose_name='подписчик'
+        verbose_name='Подписчик'
     )
 
     class Meta:

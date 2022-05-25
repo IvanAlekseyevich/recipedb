@@ -22,4 +22,5 @@ urlpatterns = [
     path('api/auth/', include('auth.urls', namespace='auth')),
     path('api/tags/', include('tags.urls', namespace='tags')),
     path('api/ingredients/', include('ingredients.urls', namespace='ingredients')),
+    path('api/recipes/', include('recipes.urls', namespace='recipes')),
 ]
