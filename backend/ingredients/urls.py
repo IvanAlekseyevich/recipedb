@@ -1,10 +1,13 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 
-from ingredients.views import AllIngredientsView, IngredientView
+from ingredients.views import IngredientViewSet
 
 app_name = 'ingredients'
 
+router = SimpleRouter()
+router.register('', IngredientViewSet, basename='ingredient')
+
 urlpatterns = [
-    path('', AllIngredientsView.as_view(), name='all_ingredients'),
-    path('<int:ingredients_id>/', IngredientView.as_view(), name='ingredient'),
+    path('', include(router.urls)),
 ]
