@@ -1,10 +1,13 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import SimpleRouter
 
-from tags.views import AllTagsView, TagView
+from tags.views import TagViewSet
 
 app_name = 'tags'
 
+router = SimpleRouter()
+router.register('', TagViewSet, basename='tag')
+
 urlpatterns = [
-    path('', AllTagsView.as_view(), name='all_tags'),
-    path('<int:tag_id>/', TagView.as_view(), name='tag'),
+    path('', include(router.urls)),
 ]
