@@ -38,10 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
     'django_filters',
     'users.apps.UsersConfig',
-    # 'auth.apps.AuthConfig',
     'tags.apps.TagsConfig',
     'ingredients.apps.IngredientsConfig',
     'recipes.apps.RecipesConfig',
@@ -147,8 +147,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+}
+
 SIMPLE_JWT = {
-    # Устанавливаем срок жизни токена
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
