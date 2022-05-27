@@ -30,13 +30,11 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        on_delete=models.PROTECT,
         related_name='recipes',
         verbose_name='Ингридиенты'
     )
     tags = models.ManyToManyField(
         Tag,
-        on_delete=models.PROTECT,
         related_name='recipes',
         verbose_name='Тэг'
     )

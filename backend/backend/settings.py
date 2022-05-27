@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'users.apps.UsersConfig',
-    'auth.apps.AuthConfig',
+    #'auth.apps.AuthConfig',
     'tags.apps.TagsConfig',
     'ingredients.apps.IngredientsConfig',
     'recipes.apps.RecipesConfig',

@@ -1,13 +1,10 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from ingredients import views
+from ingredients.views import AllIngredientsView, IngredientView
 
 app_name = 'ingredients'
 
-router = DefaultRouter()
-router.register('', views.IngredientsViewSet, basename='ingredients')
-
 urlpatterns = [
-    path('', include(router.urls), name='api-ingredients'),
+    path('', AllIngredientsView.as_view(), name='all_ingredients'),
+    path('<int:ingredients_id>/', IngredientView.as_view(), name='ingredient'),
 ]

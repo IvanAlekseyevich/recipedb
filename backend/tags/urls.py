@@ -1,13 +1,10 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from tags import views
+from tags.views import AllTagsView, TagView
 
 app_name = 'tags'
 
-router = DefaultRouter()
-router.register('', views.TagViewSet, basename='tags')
-
 urlpatterns = [
-    path('', include(router.urls), name='api-tags'),
+    path('', AllTagsView.as_view(), name='all_tags'),
+    path('<int:tag_id>/', TagView.as_view(), name='tag'),
 ]

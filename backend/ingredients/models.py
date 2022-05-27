@@ -3,6 +3,7 @@ from django.db import models
 
 
 class Ingredient(models.Model):
+    """Содержит ингридиенты."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
