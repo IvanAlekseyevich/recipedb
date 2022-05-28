@@ -27,6 +27,8 @@ class User(AbstractUser):
         max_length=150
     )
 
+    REQUIRED_FIELDS = ['email', 'password', 'first_name', 'last_name']
+
     class Meta:
         ordering = ['username']
         verbose_name = 'Пользователь'

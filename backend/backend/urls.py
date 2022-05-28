@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/ingredients/', include('ingredients.urls', namespace='ingredients')),
     path('api/recipes/', include('recipes.urls', namespace='recipes')),
     path('api/tags/', include('tags.urls', namespace='tags')),
-    path('api/users/', include('users.urls', namespace='users')),
+    path('api/', include('djoser.urls')),
+    # path('api/users/', include('users.urls', namespace='users')),
 ]
