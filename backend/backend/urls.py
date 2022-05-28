@@ -19,10 +19,10 @@ from djoser import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls', namespace='users')),
     path('api/auth/token/login/', views.TokenCreateView.as_view(), name="login"),
     path('api/auth/token/logout/', views.TokenDestroyView.as_view(), name="logout"),
-    path('api/tags/', include('tags.urls', namespace='tags')),
     path('api/ingredients/', include('ingredients.urls', namespace='ingredients')),
     path('api/recipes/', include('recipes.urls', namespace='recipes')),
+    path('api/tags/', include('tags.urls', namespace='tags')),
+    path('api/users/', include('users.urls', namespace='users')),
 ]
