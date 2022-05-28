@@ -1,4 +1,17 @@
-from django.shortcuts import render
+from rest_framework import viewsets
+
+from users.models import User
+from users.serializers import CustomUserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    Возвращает все теги, либо конкретный тег,
+    создает/изменяет/удаляет теги.
+    """
+    queryset = User.objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = []
 
 
 class Test1():
@@ -14,8 +27,4 @@ class Test3():
 
 
 class Test4():
-    pass
-
-
-class Test5():
     pass
