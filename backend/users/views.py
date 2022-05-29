@@ -1,35 +1,78 @@
-from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
+from rest_framework import filters, mixins, permissions, status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 
 from users import serializers
-from users.models import User
+from users.models import Subscription, User
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    Возвращает всех пользователей, либо конкретного
-    пользователя, создает/изменяет/удаляет пользователей.
-    """
-    queryset = User.objects.all()
-    permission_classes = []
+# class UserViewSet(viewsets.ModelViewSet):
+#     """
+#     Возвращает всех пользователей, либо конкретного
+#     пользователя, создает/изменяет/удаляет пользователей.
+#     """
+#     queryset = User.objects.all()
+#     permission_classes = []
+#
+#     # def get_queryset(self):
+#     #     is_subscribed = Subscription.objects.filter(subscriber=self.request.user).exist()
+#     #     queryset = User.objects.annotate(is_subscribed=is_subscribed)
+#     #     return queryset
+#     def me(self):
+#         user = self.request.user
+#         queryset = User.objects.get(pk=user.pk)
+#         return queryset
+#
+#     def get_serializer_class(self):
+#         if self.action == 'create':
+#             return serializers.CustomUserCreateSerializer
+#
+#         return serializers.CustomUserSerializer
 
-    # def get_queryset(self):
-    #     is_subscribed = Subscription.objects.filter(subscriber=self.request.user).exist()
-    #     queryset = User.objects.annotate(is_subscribed=is_subscribed)
-    #     return queryset
-    def me(self):
-        user = self.request.user
-        queryset = User.objects.get(pk=user.pk)
-        return queryset
-
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return serializers.CustomUserCreateSerializer
-
-        return serializers.CustomUserSerializer
+class SubscriptionsView(APIView):
+    def get(self, request):
+        data = Subscription.objects.get(subscriber=request.user)
+        serializer = serializers.SubscriptionsSerializer(data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class Test1():
-    pass
+class SubscribeView(APIView):
+    def post(self, request, user_id):
+        author = get_object_or_404(User, id=user_id)
+        if author == request.user:
+            return Response(
+                {"errors": "Нельзя подписываться на самого себя!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if Subscription.objects.filter(author=author, subscriber=request.user).exists():
+            return Response(
+                {"errors": "Вы уже подписаны на данного пользователя."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        else:
+            new_subscribe = Subscription.objects.create(author=author, subscriber=request.user)
+            new_subscribe.save()
+            return Response(serializers.SubscriptionsSerializer)
+    def delete(self, request, user_id):
+        author = get_object_or_404(User, id=user_id)
+        if author == request.user:
+            return Response(
+                {"errors": "Нельзя отписаться от себя!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if Subscription.objects.filter(author=author, subscriber=request.user).exists():
+            subscribe = Subscription.objects.get(author=author, subscriber=request.user)
+            subscribe.delete()
+            return Response({''}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(
+                {"errors": "Вы не подписаны на данного пользователя!"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
 
 
 class Test2():
