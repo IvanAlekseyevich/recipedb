@@ -9,8 +9,8 @@ from recipes.models import FavoriteRecipe, Recipe, ShoppingCart
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer()
-    #     permission_classes = []
+    serializer_class = serializers.RecipeSerializer
+    pagination_class = None
 
 
 class FavoriteRecipeApiView(APIView):
@@ -25,15 +25,16 @@ class FavoriteRecipeApiView(APIView):
         else:
             new_favorite = FavoriteRecipe.objects.create(user=user, recipe=recipe)
             new_favorite.save()
-            return Response(serializers.FavoriteRecipeSerializer)
+            serializer = serializers.FavoriteRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if FavoriteRecipe.objects.filter(user=user, recipe=recipe).exists():
             old_favorite = FavoriteRecipe.objects.get(user=user, recipe=recipe)
-            old_favorite.save()
-            return Response({''}, status=status.HTTP_204_NO_CONTENT)
+            old_favorite.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(
                 {"errors": "У вас нету данного рецепта в избранном."},
@@ -53,15 +54,16 @@ class ShoppingCartApiView(APIView):
         else:
             new_shoping = ShoppingCart.objects.create(user=user, recipe=recipe)
             new_shoping.save()
-            return Response(serializers.ShoppingCartSerializer)
+            serializer = serializers.FavoriteRecipeSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
             old_shoping = ShoppingCart.objects.get(user=user, recipe=recipe)
-            old_shoping.save()
-            return Response({''}, status=status.HTTP_204_NO_CONTENT)
+            old_shoping.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(
                 {"errors": "У вас нету данного рецепта в списке покупок."},

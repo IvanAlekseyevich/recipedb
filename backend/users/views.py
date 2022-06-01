@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,12 +10,10 @@ from users.models import Subscription, User
 class SubscriptionsApiView(APIView):
     def get(self, request):
         user = request.user
-        paginator = PageNumberPagination()
         subscriptions = Subscription.objects.filter(subscriber=user)
         authors_list = [author.author.id for author in subscriptions]
         authors = User.objects.filter(id__in=authors_list)
-        result_page = paginator.paginate_queryset(authors, request)
-        serializer = serializers.SubscriptionsSerializer(result_page, many=True)
+        serializer = serializers.SubscriptionsSerializer(authors, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
