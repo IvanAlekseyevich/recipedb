@@ -1,10 +1,16 @@
 from django.contrib import admin
 
-from recipes.models import Favorite, Recipe, ShoppingCart
+from recipes.models import FavoriteRecipe, Recipe, ShoppingCart
+
+
+class IngredientAmountInline(admin.StackedInline):
+    model = Recipe.ingredients.through
+    extra = 0
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = (IngredientAmountInline,)
     list_display = ('author', 'name', 'image', 'text', 'cooking_time', 'pub_date')
     search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')
@@ -12,7 +18,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_display_links = ('author',)
 
 
-@admin.register(Favorite)
+@admin.register(FavoriteRecipe)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
     search_fields = ('user',)
@@ -20,7 +26,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 @admin.register(ShoppingCart)
 class ShoppingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'ingredients')
+    list_display = ('user', 'recipe')
     search_fields = ('user',)
-    list_editable = ('ingredients',)
+    list_editable = ('recipe',)
     list_display_links = ('user',)

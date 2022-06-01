@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
     'djoser',
     'django_filters',
     'users.apps.UsersConfig',
@@ -151,6 +152,7 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': False,
     'USERNAME_RESET_CONFIRM_URL': False,
     'ACTIVATION_URL': False,
+    'SEND_ACTIVATION_EMAIL': False,
     'SERIALIZERS': {
         'user': 'users.serializers.CustomUserSerializer',
         'user_create': 'users.serializers.CustomUserCreateSerializer',

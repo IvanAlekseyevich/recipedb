@@ -11,5 +11,21 @@ class IngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = '__all__'
         read_only_fields = ('id',)
+
+
+class IngredientAmountSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    measurement_unit = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit', 'amount')
+        read_only_fields = ('id',)
+
+    def get_name(self, obj):
+        return obj.ingredient.name
+
+    def get_measurement_unit(self, obj):
+        return obj.ingredient.measurement_unit

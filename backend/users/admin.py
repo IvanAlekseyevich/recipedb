@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.models import Group
 
 from users.models import Subscription, User
 
@@ -15,3 +16,6 @@ class UserAdmin(admin.ModelAdmin):
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('author', 'subscriber')
     search_fields = ('author', 'subscriber')
+
+
+admin.site.unregister(Group)

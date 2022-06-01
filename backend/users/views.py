@@ -1,8 +1,7 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, permissions, status, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 
 from users import serializers
 from users.models import Subscription, User
@@ -31,14 +30,15 @@ from users.models import Subscription, User
 #
 #         return serializers.CustomUserSerializer
 
-class SubscriptionsView(APIView):
+class SubscriptionsApiView(APIView):
     def get(self, request):
-        data = Subscription.objects.get(subscriber=request.user)
-        serializer = serializers.SubscriptionsSerializer(data)
+        user = request.user
+        subscriptions = Subscription.objects.filter(subscriber=user)
+        serializer = serializers.CustomUserSerializer(subscriptions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class SubscribeView(APIView):
+class SubscribeApiView(APIView):
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
         if author == request.user:
@@ -55,6 +55,7 @@ class SubscribeView(APIView):
             new_subscribe = Subscription.objects.create(author=author, subscriber=request.user)
             new_subscribe.save()
             return Response(serializers.SubscriptionsSerializer)
+
     def delete(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
         if author == request.user:
@@ -72,7 +73,6 @@ class SubscribeView(APIView):
                 {"errors": "Вы не подписаны на данного пользователя!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
 
 class Test2():
