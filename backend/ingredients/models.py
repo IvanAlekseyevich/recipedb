@@ -41,5 +41,3 @@ class IngredientAmount(models.Model):
         ordering = ['id']
         verbose_name_plural = 'Ингридиенты и их количество'
 
-    def __str__(self):
-        return self.id

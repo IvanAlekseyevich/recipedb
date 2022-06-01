@@ -2,7 +2,8 @@ from django.contrib.auth import get_user_model
 from djoser import serializers
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-# from recipes.models import Recipe
+from recipes.models import Recipe
+from recipes.serializers import TestRecipeSerializer
 from users.models import Subscription
 
 User = get_user_model()
@@ -44,15 +45,14 @@ class CustomUserDeleteSerializer(ModelSerializer):
 
 
 class SubscriptionsSerializer(ModelSerializer):
-    # recipes = RecipesSerializer(read_only=True, many=True)
-    # recipes_count = SerializerMethodField()
-    class Meta:
-        model = Subscription
-        fields = '__all__'
-        # fields = ('email', 'id', 'username', 'password', 'first_name', 'last_name')
-        # fields = ('email', 'id', 'username', 'password', 'first_name', 'last_name',
-        #           'recipes', 'recipes_count')
+    recipes = TestRecipeSerializer(read_only=True, many=True)
+    recipes_count = SerializerMethodField()
 
-    # def get_is_subscribed(self, obj):
-    #     queryset = Recipe.objects.filter(author=obj.id).count()
-    #     return queryset
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'recipes', 'recipes_count')
+
+    def get_recipes_count(self, obj):
+        queryset = Recipe.objects.filter(author=obj).count()
+        return queryset

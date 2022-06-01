@@ -8,7 +8,7 @@ from users import views
 app_name = 'users'
 
 router = DefaultRouter()
-router.register("users", UserViewSet)
+router.register("", UserViewSet)
 
 User = get_user_model()
 
