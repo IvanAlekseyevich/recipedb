@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from ingredients.models import Ingredient
-from recipes.models import FavoriteRecipe, ShoppingCart, Recipe
+from recipes.models import FavoriteRecipe, ShoppingCart, Recipe, RecipeIngredient
 from tags.serializers import TagSerializer
 from users.models import Subscription
 
@@ -23,22 +22,20 @@ class RecipesUserSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    amount = serializers.SerializerMethodField()
+    id = serializers.ReadOnlyField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
+    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
 
     class Meta:
-        model = Ingredient
-        fields = ('id', 'name', 'measurement_unit', 'amount')
-        read_only_fields = ('id',)
-
-    def get_amount(self, obj):
-        pass
+        model = RecipeIngredient
+        fields = ["id", "name", "measurement_unit", "amount", ]
 
 
 class RecipeSerializer(serializers.ModelSerializer):
     """"""
     tags = TagSerializer(many=True)
     author = RecipesUserSerializer()
-    ingredients = RecipeIngredientSerializer(many=True)
+    ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
