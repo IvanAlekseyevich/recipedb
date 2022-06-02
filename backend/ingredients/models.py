@@ -1,4 +1,3 @@
-from django.core.validators import MinValueValidator
 from django.db import models
 
 
@@ -21,23 +20,3 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class IngredientAmount(models.Model):
-    """Содержит ингридиенты и их количество из рецептов."""
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE,
-        verbose_name='Ингридиент',
-        max_length=200,
-        db_index=True
-    )
-    amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1, 'Убедитесь, что это значение больше либо равно 1.')],
-        verbose_name='Количество'
-    )
-
-    class Meta:
-        ordering = ['id']
-        verbose_name_plural = 'Ингридиенты и их количество'
-
