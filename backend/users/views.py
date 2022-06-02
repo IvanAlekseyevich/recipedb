@@ -8,6 +8,8 @@ from users.models import Subscription, User
 
 
 class SubscriptionsApiView(APIView):
+    """Возвращает список подписок текущего пользователя на других пользователей."""
+
     def get(self, request):
         user = request.user
         subscriptions = Subscription.objects.filter(subscriber=user)
@@ -18,6 +20,8 @@ class SubscriptionsApiView(APIView):
 
 
 class SubscribeApiView(APIView):
+    """Подписывает либо удаляет подписку на данного пользователя."""
+
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
         if author == request.user:

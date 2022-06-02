@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Ingredient(models.Model):
-    """Содержит ингридиенты."""
+    """Содержит ингридиент."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -19,4 +19,4 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингридиенты'
 
     def __str__(self):
-        return self.name
+        return f'{self.name}, {self.measurement_unit}'

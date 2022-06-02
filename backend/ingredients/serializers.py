@@ -6,7 +6,7 @@ from ingredients.models import Ingredient
 class IngredientSerializer(serializers.ModelSerializer):
     """
     Возвращает список всех ингридиентов,
-    создает, изменяет и удаляет ингридиенты.
+    создает, изменяет и удаляет ингридиент.
     """
 
     class Meta:

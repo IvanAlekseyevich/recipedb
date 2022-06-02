@@ -22,6 +22,7 @@ class RecipesUserSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
+    """Возвращает ингридиент, его единицу измерения и количество в рецепте."""
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
@@ -32,7 +33,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """"""
+    """Возвращает рецепт, либо список рецептов. Создает и изменяет рецепт."""
     tags = TagSerializer(many=True)
     author = RecipesUserSerializer()
     ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
@@ -56,25 +57,26 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
     def get_is_favorited(self, obj):
+        """
+        Добавляет поле избранного - есть ли данный рецепт у
+        текущего пользователя в избранном: true/false.
+        """
         request_user = self.context.get('request').user.id
         queryset = FavoriteRecipe.objects.filter(user=request_user, recipe=obj).exists()
         return queryset
 
     def get_is_in_shopping_cart(self, obj):
+        """
+        Добавляет поле списка покупок - есть ли данный рецепт у
+        текущего пользователя в списке покупок: true/false.
+        """
         request_user = self.context.get('request').user.id
         queryset = ShoppingCart.objects.filter(user=request_user, recipe=obj).exists()
         return queryset
 
 
-class TestRecipeSerializer(serializers.ModelSerializer):
-    image = serializers.URLField
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-
-
-class FavoriteRecipeSerializer(serializers.ModelSerializer):
+class ShortRecipeSerializer(serializers.ModelSerializer):
+    """Выводит нужные свойства рецепта."""
     image = serializers.URLField
 
     class Meta:
@@ -83,6 +85,8 @@ class FavoriteRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
+    """Выводит список рецептов, добавленных в список покупок."""
+
     class Meta:
         model = ShoppingCart
         fields = '__all__'

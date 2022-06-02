@@ -4,7 +4,7 @@ from tags.models import Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Возвращает список всех тегов, создает, изменяет и удаляет теги."""
+    """Возвращает список всех тегов, создает, изменяет и удаляет тег."""
 
     class Meta:
         model = Tag

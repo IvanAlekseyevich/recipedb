@@ -6,8 +6,8 @@ from tags.serializers import TagSerializer
 
 class TagViewSet(viewsets.ModelViewSet):
     """
-    Возвращает все теги, либо конкретный тег,
-    создает/изменяет/удаляет теги.
+    Возвращает список тегов, либо конкретный тег,
+    создает/изменяет/удаляет тег.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer

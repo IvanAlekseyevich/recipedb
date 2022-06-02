@@ -8,12 +8,20 @@ from recipes.models import FavoriteRecipe, Recipe, ShoppingCart
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """
+    Возвращает список рецептов, либо конкретный рецепт,
+    создает/изменяет/удаляет рецепт.
+    """
     queryset = Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
     pagination_class = None
+    # permission_classes = []
+    # filter_backends = (,)
 
 
 class FavoriteRecipeApiView(APIView):
+    """Добавляет либо удаляет рецепт из избранного."""
+
     def post(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -25,7 +33,7 @@ class FavoriteRecipeApiView(APIView):
         else:
             new_favorite = FavoriteRecipe.objects.create(user=user, recipe=recipe)
             new_favorite.save()
-            serializer = serializers.FavoriteRecipeSerializer(recipe)
+            serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
@@ -43,6 +51,8 @@ class FavoriteRecipeApiView(APIView):
 
 
 class ShoppingCartApiView(APIView):
+    """Добавляет либо удаляет рецепт из списка покупок."""
+
     def post(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -54,7 +64,7 @@ class ShoppingCartApiView(APIView):
         else:
             new_shoping = ShoppingCart.objects.create(user=user, recipe=recipe)
             new_shoping.save()
-            serializer = serializers.FavoriteRecipeSerializer(recipe)
+            serializer = serializers.ShortRecipeSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):

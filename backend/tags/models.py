@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Tag(models.Model):
-    """Содержит теги."""
+    """Содержит тег."""
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -25,4 +25,4 @@ class Tag(models.Model):
         verbose_name_plural = 'Тэги'
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.slug}'

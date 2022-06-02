@@ -3,6 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    """Содержит пользователя."""
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         max_length=254,
@@ -35,10 +36,11 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return self.username
+        return f'{self.username} {self.email}'
 
 
 class Subscription(models.Model):
+    """Содержит подписку пользователя на других пользователей."""
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -54,4 +56,8 @@ class Subscription(models.Model):
 
     class Meta:
         ordering = ['author']
+        verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.subscriber} subscribed to {self.author}'
