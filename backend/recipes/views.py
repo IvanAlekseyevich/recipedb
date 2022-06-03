@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,9 +15,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """
     queryset = Recipe.objects.all()
     serializer_class = serializers.RecipeSerializer
-    pagination_class = None
     # permission_classes = []
-    # filter_backends = (,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('tags__slug',)
 
 
 class FavoriteRecipeApiView(APIView):

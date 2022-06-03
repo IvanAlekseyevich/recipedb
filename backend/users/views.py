@@ -20,7 +20,7 @@ class SubscriptionsApiView(APIView):
 
 
 class SubscribeApiView(APIView):
-    """Подписывает либо удаляет подписку на данного пользователя."""
+    """Добавляет либо удаляет подписку на данного пользователя."""
 
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)

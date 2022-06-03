@@ -8,9 +8,14 @@ class RecipeIngredientInline(admin.StackedInline):
     extra = 0
 
 
+class RecipeTagInline(admin.StackedInline):
+    model = models.Recipe.tags.through
+    extra = 1
+
+
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = (RecipeIngredientInline,)
+    inlines = (RecipeIngredientInline, RecipeTagInline)
     list_display = ('id', 'author', 'name', 'image', 'text', 'cooking_time', 'pub_date')
     search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')

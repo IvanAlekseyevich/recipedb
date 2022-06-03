@@ -36,7 +36,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'{self.username} {self.email}'
+        return self.username
 
 
 class Subscription(models.Model):
@@ -56,7 +56,7 @@ class Subscription(models.Model):
 
     class Meta:
         ordering = ['author']
-        verbose_name = 'Подписка'
+        verbose_name = 'Подписки'
         verbose_name_plural = 'Подписки'
 
     def __str__(self):

@@ -22,7 +22,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='media/recipes/images/',
+        upload_to='recipes/images/',
         blank=True,
         null=True
     )
@@ -54,7 +54,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return f'{self.author} - {self.name}'
+        return self.name
 
 
 class RecipeIngredient(models.Model):
@@ -76,6 +76,7 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         ordering = ['recipe']
+        verbose_name = 'Ингридиенты'
         verbose_name_plural = 'Ингридиенты и их количество'
 
     def __str__(self):
@@ -97,6 +98,7 @@ class RecipeTag(models.Model):
 
     class Meta:
         ordering = ['recipe']
+        verbose_name = 'Тэги'
         verbose_name_plural = 'Теги рецептов'
 
     def __str__(self):
@@ -120,6 +122,7 @@ class FavoriteRecipe(models.Model):
 
     class Meta:
         ordering = ['user']
+        verbose_name = 'Рецепт'
         verbose_name_plural = 'Избранные рецепты'
 
     def __str__(self):
@@ -143,6 +146,7 @@ class ShoppingCart(models.Model):
 
     class Meta:
         ordering = ['user']
+        verbose_name = 'Рецепт'
         verbose_name_plural = 'Списки покупок'
 
     def __str__(self):

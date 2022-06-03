@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework import viewsets
 
 from ingredients.models import Ingredient
@@ -11,5 +12,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    pagination_class = None
     permission_classes = []
+    filter_backends = (filters.SearchFilter,)
+    pagination_class = None
+    search_fields = ('^name',)
