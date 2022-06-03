@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from recipes.models import FavoriteRecipe, ShoppingCart, Recipe, RecipeIngredient
+from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, RecipeTag, ShoppingCart
 from tags.serializers import TagSerializer
 from users.models import Subscription
 
@@ -33,7 +34,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """Возвращает рецепт, либо список рецептов. Создает и изменяет рецепт."""
+    """Возвращает рецепт, либо список рецептов."""
     tags = TagSerializer(many=True)
     author = RecipesUserSerializer()
     ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
@@ -73,6 +74,41 @@ class RecipeSerializer(serializers.ModelSerializer):
         request_user = self.context.get('request').user.id
         queryset = ShoppingCart.objects.filter(user=request_user, recipe=obj).exists()
         return queryset
+
+
+class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
+    """Создает и изменяет рецепт."""
+    ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
+    tags = TagSerializer(many=True)
+    image = Base64ImageField()
+    author = serializers.StringRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'ingredients',
+            'tags',
+            'image',
+            'name',
+            'text',
+            'cooking_time'
+        )
+
+    def create(self, validated_data):
+        """Создает рецепт."""
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        for ingrid, amount in ingredients:
+            RecipeIngredient.objects.create(recipe=recipe, ingredient=ingrid, amount=amount)
+        for tag in tags:
+            RecipeTag.objects.create(recipe=recipe, tag=tag)
+        return RecipeSerializer(recipe)
+
+    def update(self, instance, validated_data):
+        """Изменяет рецепт."""
+        pass
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
