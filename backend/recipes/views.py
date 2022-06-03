@@ -14,10 +14,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     создает/изменяет/удаляет рецепт.
     """
     queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer
     # permission_classes = []
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('tags__slug',)
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update'):
+            return serializers.RecipeCreateOrEditSerializer
+        return serializers.RecipeSerializer
 
 
 class FavoriteRecipeApiView(APIView):
