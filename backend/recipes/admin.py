@@ -25,15 +25,15 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(models.RecipeIngredient)
 class RecipeIngredientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ingredient', 'recipe', 'amount')
-    search_fields = ('ingredient', 'recipe')
+    list_display = ('id', 'recipe', 'ingredient', 'amount')
+    search_fields = ('recipe', 'ingredient')
     list_editable = ('ingredient', 'amount')
 
 
 @admin.register(models.RecipeTag)
 class RecipeTagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'tag', 'recipe')
-    search_fields = ('tag', 'recipe')
+    list_display = ('id', 'recipe', 'tag')
+    search_fields = ('recipe', 'tag')
     list_editable = ('tag',)
 
 
