@@ -1,8 +1,11 @@
 from django.contrib.auth import get_user_model
-from drf_extra_fields.fields import Base64ImageField
+from django.shortcuts import get_object_or_404
+#from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
+from ingredients.models import Ingredient
 from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, RecipeTag, ShoppingCart
+from tags.models import Tag
 from tags.serializers import TagSerializer
 from users.models import Subscription
 
@@ -76,20 +79,24 @@ class RecipeSerializer(serializers.ModelSerializer):
         return queryset
 
 
+class IngridCreateSerializer(serializers.Serializer):
+    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField()
+
 class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
     """Создает и изменяет рецепт."""
-    ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
-    tags = TagSerializer(many=True)
-    image = Base64ImageField()
-    author = serializers.StringRelatedField(
-        read_only=True, default=serializers.CurrentUserDefault())
+    ingredients = IngridCreateSerializer(many=True)
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    #    image = Base64ImageField()
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Recipe
         fields = (
+            'author',
             'ingredients',
             'tags',
-            'image',
+            #            'image',
             'name',
             'text',
             'cooking_time'
@@ -100,8 +107,8 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
-        for ingrid, amount in ingredients:
-            RecipeIngredient.objects.create(recipe=recipe, ingredient=ingrid, amount=amount)
+        for ingredient in ingredients:
+            pass
         for tag in tags:
             RecipeTag.objects.create(recipe=recipe, tag=tag)
         return RecipeSerializer(recipe)
