@@ -31,11 +31,13 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        related_name='recipes',
         through='RecipeIngredient',
         verbose_name='Ингридиенты'
     )
     tags = models.ManyToManyField(
         Tag,
+        related_name='recipes',
         through='RecipeTag',
         verbose_name='Тэг'
     )

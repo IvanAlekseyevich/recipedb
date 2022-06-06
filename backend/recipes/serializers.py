@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
-#from drf_extra_fields.fields import Base64ImageField
+# from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from ingredients.models import Ingredient
@@ -83,6 +83,7 @@ class IngridCreateSerializer(serializers.Serializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
 
+
 class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
     """Создает и изменяет рецепт."""
     ingredients = IngridCreateSerializer(many=True)
@@ -108,7 +109,7 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
-            pass
+            RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'], amount=ingredient['amount'])
         for tag in tags:
             RecipeTag.objects.create(recipe=recipe, tag=tag)
         return RecipeSerializer(recipe)
