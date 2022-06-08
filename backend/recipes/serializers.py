@@ -123,7 +123,7 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
-    """Выводит нужные свойства рецепта."""
+    """Выводит укороченый список свойств рецепта."""
     image = serializers.URLField
 
     class Meta:
