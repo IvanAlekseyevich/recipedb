@@ -26,32 +26,34 @@ class SubscribeApiView(APIView):
 
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
-        if author == request.user:
+        user = request.user
+        if author == user:
             return Response(
                 {"errors": "Нельзя подписываться на самого себя!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if Subscription.objects.filter(author=author, subscriber=request.user).exists():
+        if Subscription.objects.filter(author=author, subscriber=user).exists():
             return Response(
                 {"errors": "Вы уже подписаны на данного пользователя."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
-            new_subscribe = Subscription.objects.create(author=author, subscriber=request.user)
+            new_subscribe = Subscription.objects.create(author=author, subscriber=user)
             new_subscribe.save()
             serializer = serializers.SubscriptionsSerializer(author)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
-        if author == request.user:
+        user = request.user
+        if author == user:
             return Response(
                 {"errors": "Нельзя отписаться от себя!"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if Subscription.objects.filter(author=author, subscriber=request.user).exists():
-            subscribe = Subscription.objects.get(author=author, subscriber=request.user)
+        if Subscription.objects.filter(author=author, subscriber=user).exists():
+            subscribe = Subscription.objects.get(author=author, subscriber=user)
             subscribe.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
