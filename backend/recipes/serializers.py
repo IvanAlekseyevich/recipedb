@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 # from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -33,7 +32,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RecipeIngredient
-        fields = ["id", "name", "measurement_unit", "amount", ]
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -79,9 +78,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         return queryset
 
 
-class IngridCreateSerializer(serializers.Serializer):
+class IngridCreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(write_only=True, min_value=1)
+
+    class Meta:
+        model = RecipeIngredient
+        fields = ('id', 'amount')
 
 
 class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
@@ -112,7 +115,7 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
             RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'], amount=ingredient['amount'])
         for tag in tags:
             RecipeTag.objects.create(recipe=recipe, tag=tag)
-        return RecipeSerializer(recipe)
+        return recipe
 
     def update(self, instance, validated_data):
         """Изменяет рецепт."""
