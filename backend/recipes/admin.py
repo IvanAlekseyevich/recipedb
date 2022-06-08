@@ -16,10 +16,10 @@ class RecipeTagInline(admin.StackedInline):
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline, RecipeTagInline)
-    list_display = ('id', 'author', 'name', 'image', 'text', 'cooking_time', 'pub_date')
+    list_display = ('name', 'author', 'pub_date')
     search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')
-    list_editable = ('name', 'image', 'text', 'cooking_time')
+    list_editable = ('name',)
     list_display_links = ('author',)
 
 
