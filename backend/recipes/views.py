@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from recipes import serializers
 from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, ShoppingCart
+from recipes.permissions import IsAuthorOrStaffOrReadOnly
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -14,8 +15,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     создает/изменяет/удаляет рецепт.
     """
     queryset = Recipe.objects.all()
-    # serializer_class = serializers.RecipeSerializer
-    # permission_classes = []
+    permission_classes = [IsAuthorOrStaffOrReadOnly]
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('tags__slug',)
 
@@ -95,11 +95,7 @@ class DownloadShopping(APIView):
 
     def get(self, request):
         user = request.user
-        shopping_recipe_list = user.shoping.values()
-        recipe_id = []
-        for recipe in shopping_recipe_list:
-            recipe_id.append(recipe['recipe_id'])
-        recipe_list = RecipeIngredient.objects.filter(recipe__in=recipe_id)
+        recipe_list = RecipeIngredient.objects.filter(recipe__shopping__user=user)
         ingrid_amount = {}
         for recipe in recipe_list:
             name = recipe.ingredient.name
