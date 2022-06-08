@@ -1,11 +1,11 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recipes import serializers
-from recipes.models import FavoriteRecipe, Recipe, ShoppingCart
+from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, ShoppingCart
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -27,6 +27,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteRecipeApiView(APIView):
     """Добавляет либо удаляет рецепт из избранного."""
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, recipe_id):
         user = request.user
@@ -58,6 +59,7 @@ class FavoriteRecipeApiView(APIView):
 
 class ShoppingCartApiView(APIView):
     """Добавляет либо удаляет рецепт из списка покупок."""
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, recipe_id):
         user = request.user
@@ -85,3 +87,34 @@ class ShoppingCartApiView(APIView):
                 {"errors": "У вас нету данного рецепта в списке покупок."},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class DownloadShopping(APIView):
+    """Выгружает ингридиенты из списка покупок."""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        shopping_recipe_list = user.shoping.values()
+        recipe_id = []
+        for recipe in shopping_recipe_list:
+            recipe_id.append(recipe['recipe_id'])
+        recipe_list = RecipeIngredient.objects.filter(recipe__in=recipe_id)
+        ingrid_amount = {}
+        for recipe in recipe_list:
+            name = recipe.ingredient.name
+            measurement_unit = recipe.ingredient.measurement_unit
+            amount = recipe.amount
+            if f'{name} ({measurement_unit})' in ingrid_amount:
+                ingrid_amount[f'{name} ({measurement_unit})'] += amount
+            else:
+                ingrid_amount[f'{name} ({measurement_unit})'] = amount
+        shopping_list = []
+        for ingridient, amount in ingrid_amount.items():
+            shopping_list.append(f'{ingridient} - {amount}\n')
+        shopping_list.sort()
+        response = HttpResponse(shopping_list, 'Content-Type: text/plain')
+        response['Content-Disposition'] = (
+            'attachment;' 'filename="shopping_list.txt"'
+        )
+        return response
