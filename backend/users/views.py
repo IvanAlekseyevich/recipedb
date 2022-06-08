@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,6 +9,7 @@ from users.models import Subscription, User
 
 class SubscriptionsApiView(APIView):
     """Возвращает список подписок текущего пользователя на других пользователей."""
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user
@@ -21,6 +22,7 @@ class SubscriptionsApiView(APIView):
 
 class SubscribeApiView(APIView):
     """Добавляет либо удаляет подписку на данного пользователя."""
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
