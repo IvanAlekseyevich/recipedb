@@ -79,6 +79,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class IngridCreateSerializer(serializers.ModelSerializer):
+    """Необходим для десериализации рецепта."""
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(write_only=True, min_value=1)
 
@@ -107,14 +108,14 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
         )
 
     def to_representation(self, instance):
+        """Изменяет вывод созданного рецепта."""
         return RecipeSerializer(instance, context=self.context).data
 
     def create(self, validated_data):
         """Создает рецепт."""
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        image = validated_data.pop('image')
-        recipe = Recipe.objects.create(image=image, **validated_data)
+        recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'], amount=ingredient['amount'])
         for tag in tags:
@@ -123,7 +124,22 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """Изменяет рецепт."""
-        pass
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get('cooking_time', instance.cooking_time)
+        instance.image = validated_data.get('image', instance.image)
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe_ingr = RecipeIngredient.objects.filter(recipe=instance)
+        recipe_ingr.delete()
+        for ingredient in ingredients:
+            RecipeIngredient.objects.create(recipe=instance, ingredient=ingredient['id'], amount=ingredient['amount'])
+        tags_recipe = RecipeTag.objects.filter(recipe=instance)
+        tags_recipe.delete()
+        for tag in tags:
+            RecipeTag.objects.create(recipe=instance, tag=tag)
+        instance.save()
+        return instance
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
