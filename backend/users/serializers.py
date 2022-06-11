@@ -50,7 +50,7 @@ class CustomUserDeleteSerializer(serializers.ModelSerializer):
 
 
 class RecipeMinifiedSerializer(serializers.ModelSerializer):
-    """Выводит укороченный список атрибутов рецепта в профиле пользователя."""
+    """Выводит укороченный список атрибутов рецепта."""
     image = serializers.URLField
 
     class Meta:
