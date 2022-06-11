@@ -1,11 +1,11 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
 from ingredients.views import IngredientViewSet
 
 app_name = 'ingredients'
 
-router = SimpleRouter()
+router = DefaultRouter()
 router.register('', IngredientViewSet, basename='ingredient')
 
 urlpatterns = [

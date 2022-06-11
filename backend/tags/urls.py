@@ -1,11 +1,11 @@
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
 from tags.views import TagViewSet
 
 app_name = 'tags'
 
-router = SimpleRouter()
+router = DefaultRouter()
 router.register('', TagViewSet, basename='tag')
 
 urlpatterns = [
