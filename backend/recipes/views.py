@@ -21,8 +21,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('create', 'update'):
-            return serializers.RecipeCreateOrEditSerializer
-        return serializers.RecipeSerializer
+            return serializers.RecipeCreateUpdateSerializer
+        return serializers.RecipeListSerializer
 
 
 class FavoriteRecipeApiView(APIView):

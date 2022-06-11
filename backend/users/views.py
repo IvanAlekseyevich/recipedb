@@ -16,7 +16,7 @@ class SubscriptionsApiView(APIView):
 
     def get(self, request):
         authors = User.objects.filter(subscribers__subscriber=request.user)
-        serializer = serializers.SubscriptionsSerializer(
+        serializer = serializers.UserWithRecipesSerializer(
             authors,
             many=True,
             context={'request': request}
@@ -43,7 +43,7 @@ class SubscribeApiView(APIView):
             )
         else:
             Subscription.objects.create(author=author, subscriber=user)
-            serializer = serializers.SubscriptionsSerializer(author, context={'request': request})
+            serializer = serializers.UserWithRecipesSerializer(author, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, user_id):

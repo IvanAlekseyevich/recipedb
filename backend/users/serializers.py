@@ -49,7 +49,7 @@ class CustomUserDeleteSerializer(serializers.ModelSerializer):
         fields = ''
 
 
-class ShortRecipeSerializer(serializers.ModelSerializer):
+class RecipeMinifiedSerializer(serializers.ModelSerializer):
     """Выводит укороченный список атрибутов рецепта в профиле пользователя."""
     image = serializers.URLField
 
@@ -58,12 +58,12 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionsSerializer(serializers.ModelSerializer, IsSubscribedMixin):
+class UserWithRecipesSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     """
     Возвращает список подписок данного пользователя на других пользователей,
     либо профиль пользователя на которого подписываешься.
     """
-    recipes = ShortRecipeSerializer(read_only=True, many=True)
+    recipes = RecipeMinifiedSerializer(read_only=True, many=True)
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
