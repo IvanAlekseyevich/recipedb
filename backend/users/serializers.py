@@ -72,6 +72,6 @@ class UserWithRecipesSerializer(serializers.ModelSerializer, IsSubscribedMixin):
                   'is_subscribed', 'recipes', 'recipes_count')
 
     def get_recipes_count(self, obj):
-        """Добавляет поле с количеством рецептов пользователя."""
+        """Добавляет поле с общим количеством рецептов пользователя."""
         count = Recipe.objects.filter(author=obj).count()
         return count

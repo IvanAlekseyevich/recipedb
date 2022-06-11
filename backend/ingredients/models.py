@@ -3,7 +3,7 @@ from django.db import models
 
 class Ingredient(models.Model):
     """
-    Создает объект ингридиента со следующими обязательными атрибутами:
+    Создает объект ингридиент со следующими обязательными атрибутами:
     - name
     - measurement_unit
     """
