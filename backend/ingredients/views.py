@@ -7,8 +7,8 @@ from ingredients.serializers import IngredientSerializer
 
 class IngredientViewSet(viewsets.ModelViewSet):
     """
-    Возвращает список ингридиентов, либо конкретный ингридиент,
-    создает/изменяет/удаляет ингридиент.
+    Возвращает список ингридиентов, либо конкретный ингридиент.
+    Создает/изменяет/удаляет ингридиент. Возможен поиск по названию.
     """
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer

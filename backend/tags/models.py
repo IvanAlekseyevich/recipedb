@@ -2,7 +2,12 @@ from django.db import models
 
 
 class Tag(models.Model):
-    """Содержит тег."""
+    """
+    Создает объект тэга со следующими обязательными уникальными атрибутами:
+    - name
+    - color
+    - slug
+    """
     name = models.CharField(
         verbose_name='Название',
         max_length=200,

@@ -8,7 +8,10 @@ from users.models import Subscription, User
 
 
 class SubscriptionsApiView(APIView):
-    """Возвращает список подписок текущего пользователя на других пользователей."""
+    """
+    Возвращает пользователей, на которых подписан текущий пользователь.
+    В выдачу добавляются рецепты.
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
