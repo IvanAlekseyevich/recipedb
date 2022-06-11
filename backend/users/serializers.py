@@ -8,10 +8,11 @@ from users.models import Subscription
 User = get_user_model()
 
 
-class IsSubscribed(serializers.Serializer):
+class IsSubscribedMixin(serializers.Serializer):
     """
-    Абстрактный класс, добавляющий поле подписки в сериализатор -
-    подписан ли текущий пользователь на этого пользователя: true/false.
+    Добавляет поле подписки в сериализатор - подписан ли
+    текущий пользователь на этого пользователя: true/false.
+    Необходим доступ к request из context.
     """
     is_subscribed = serializers.SerializerMethodField()
 
@@ -21,7 +22,7 @@ class IsSubscribed(serializers.Serializer):
         return subscription
 
 
-class CustomUserSerializer(UserSerializer, IsSubscribed):
+class CustomUserSerializer(UserSerializer, IsSubscribedMixin):
     """
     Cериализатор пользователя для djoser. Возвращает список
     пользователей либо одного пользователя и изменяет его.
@@ -57,7 +58,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionsSerializer(serializers.ModelSerializer, IsSubscribed):
+class SubscriptionsSerializer(serializers.ModelSerializer, IsSubscribedMixin):
     """
     Возвращает список подписок данного пользователя на других пользователей,
     либо профиль пользователя на которого подписываешься.
