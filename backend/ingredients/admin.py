@@ -7,6 +7,6 @@ from ingredients.models import Ingredient
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'measurement_unit')
     search_fields = ('name',)
+    list_filter = ('name',)
     list_editable = ('name', 'measurement_unit')
-    list_filter = ('measurement_unit',)
     ordering = ('name',)
