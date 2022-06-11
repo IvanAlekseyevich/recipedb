@@ -15,7 +15,7 @@
 
 ## Особенности настройки Docker
 
-- Проект запускается в четырех контейнерах: db, backend, web, nginx
+- Проект запускается в четырех контейнерах: nginx, PostgreSQL и Django
 - Обновление образа проекта в Docker Hub
 
 ## Технологии
@@ -23,9 +23,9 @@
 - Python 3.9
 - Django 4.0.4
 - Django REST framework 3.13.1
-- PostgreSQL 13.0
-- Gunicorn 20.0.4
-- nginx 1.21.3
+- PostgreSQL 14.3
+- Gunicorn 20.1.0
+- nginx 1.22.0
 - React
 
 ## Установка и запуск проекта
@@ -35,14 +35,15 @@
 В папке infra создайте файл .env и добавьте в него переменные с вашими данными:
 
 ```
-SECRET_KEY             # ключ для генерации хэша Django
-DEBUG                  # значение Debug
-DB_ENGINE              # укажите используемую БД
-DB_NAME                # имя базы данных
-POSTGRES_USER          # логин для подключения к БД
-POSTGRES_PASSWORD      # пароль для подключения к БД (установите свой)
-DB_HOST                # название сервиса (контейнера) БД
-DB_PORT                # порт для подключения к БД 
+SECRET_KEY=           # ключ для генерации хэша Django
+DEBUG=                # значение Debug
+ALLOWED_HOSTS=[]      # разрешенные хосты
+DB_ENGINE=            # укажите используемую БД
+DB_NAME=              # имя базы данных
+POSTGRES_USER=        # логин для подключения к БД
+POSTGRES_PASSWORD=    # пароль для подключения к БД (установите свой)
+DB_HOST=              # название сервиса (контейнера) БД
+DB_PORT=              # порт для подключения к БД 
 ```
 
 Запустите docker-compose
@@ -51,17 +52,10 @@ DB_PORT                # порт для подключения к БД
 sudo docker-compose up -d --build
 ```
 
-Выполните миграции и создайте суперпользователя
+Cоздайте суперпользователя
 
 ```sh
-sudo docker-compose exec web python manage.py migrate
 sudo docker-compose exec web python manage.py createsuperuser
-```
-
-Переместите файлы статики
-
-```sh
-sudo docker-compose exec web python manage.py collectstatic --no-input
 ```
 
 Остановка docker-compose и удаление всех созданных Docker папок и томов проекта
