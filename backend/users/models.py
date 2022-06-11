@@ -3,7 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    """Содержит пользователя."""
+    """
+    Создает объект пользователя со следующими обязательными атрибутами:
+    - email
+    - username
+    - password
+    - first_name
+    - last_name
+    """
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
         max_length=254,
@@ -40,7 +47,11 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-    """Содержит подписку пользователя на других пользователей."""
+    """
+    Создает объект подписки пользователя на автора со следующими атрибутами:
+    - author
+    - subscriber
+    """
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -58,6 +69,12 @@ class Subscription(models.Model):
         ordering = ['author']
         verbose_name = 'Подписки'
         verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['author', 'subscriber'],
+                name='subscription'
+            )
+        ]
 
     def __str__(self):
         return f'{self.subscriber} subscribed to {self.author}'
