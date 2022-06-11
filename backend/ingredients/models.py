@@ -2,7 +2,11 @@ from django.db import models
 
 
 class Ingredient(models.Model):
-    """Содержит ингридиент."""
+    """
+    Создает объект ингридиента со следующими обязательными атрибутами:
+    - name
+    - measurement_unit
+    """
     name = models.CharField(
         verbose_name='Название',
         max_length=200,
@@ -17,6 +21,12 @@ class Ingredient(models.Model):
         ordering = ['name']
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='ingredient'
+            )
+        ]
 
     def __str__(self):
         return f'{self.name}, {self.measurement_unit}'
