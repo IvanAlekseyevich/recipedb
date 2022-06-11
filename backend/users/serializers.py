@@ -1,54 +1,46 @@
 from django.contrib.auth import get_user_model
-from djoser import serializers
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers
 
 from recipes.models import Recipe
-from recipes.serializers import ShortRecipeSerializer
 from users.models import Subscription
 
 User = get_user_model()
 
 
-class CustomUserSerializer(serializers.UserSerializer):
+class IsSubscribed(serializers.Serializer):
+    """
+    Абстрактный класс, добавляющий поле подписки в сериализатор -
+    подписан ли текущий пользователь на этого пользователя: true/false.
+    """
+    is_subscribed = serializers.SerializerMethodField()
+
+    def get_is_subscribed(self, obj):
+        request_user = self.context.get('request').user.id
+        subscription = Subscription.objects.filter(author=obj.id, subscriber=request_user).exists()
+        return subscription
+
+
+class CustomUserSerializer(UserSerializer, IsSubscribed):
     """
     Cериализатор пользователя для djoser. Возвращает список
-    пользователей, либо одного пользователя и изменяет его.
+    пользователей либо одного пользователя и изменяет его.
     """
-    is_subscribed = SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
 
-    def get_is_subscribed(self, obj):
-        """
-        Добавляет поле подписки - подписан ли текущий пользователь
-        на этого пользователя: true/false.
-        """
-        request_user = self.context.get('request').user.id
-        queryset = Subscription.objects.filter(author=obj.id, subscriber=request_user).exists()
-        return queryset
 
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError('Нельзя использовать имя <me>!')
-        return value
-
-
-class CustomUserCreateSerializer(serializers.UserCreateSerializer):
+class CustomUserCreateSerializer(UserCreateSerializer):
     """Cериализатор создания пользователя для djoser."""
 
     class Meta:
         model = User
         fields = ('email', 'id', 'username', 'password', 'first_name', 'last_name')
 
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError('Нельзя использовать имя <me>!')
-        return value
 
-
-class CustomUserDeleteSerializer(ModelSerializer):
+class CustomUserDeleteSerializer(serializers.ModelSerializer):
     """Cериализатор удаления пользователя для djoser."""
 
     class Meta:
@@ -56,20 +48,29 @@ class CustomUserDeleteSerializer(ModelSerializer):
         fields = ''
 
 
-class SubscriptionsSerializer(ModelSerializer):
+class ShortRecipeSerializer(serializers.ModelSerializer):
+    """Выводит укороченный список атрибутов рецепта в профиле пользователя."""
+    image = serializers.URLField
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+
+
+class SubscriptionsSerializer(serializers.ModelSerializer, IsSubscribed):
     """
     Возвращает список подписок данного пользователя на других пользователей,
-    либо один профиль пользователя при подписке на него.
+    либо профиль пользователя на которого подписываешься.
     """
     recipes = ShortRecipeSerializer(read_only=True, many=True)
-    recipes_count = SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = ('email', 'id', 'username', 'first_name', 'last_name',
-                  'recipes', 'recipes_count')
+                  'is_subscribed', 'recipes', 'recipes_count')
 
     def get_recipes_count(self, obj):
-        """Добавляет поле с количеством рецептов данного пользователя."""
-        queryset = Recipe.objects.filter(author=obj).count()
-        return queryset
+        """Добавляет поле с количеством рецептов пользователя."""
+        count = Recipe.objects.filter(author=obj).count()
+        return count
