@@ -9,7 +9,17 @@ User = get_user_model()
 
 
 class Recipe(models.Model):
-    """Содержит рецепт."""
+    """
+    Создает объект рецепт со следующими обязательными атрибутами:
+    - author
+    - name
+    - image
+    - text
+    - ingredients
+    - tags
+    - cooking_time
+    - pub_date
+    """
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -22,9 +32,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         verbose_name='Картинка',
-        upload_to='recipes/images/',
-        blank=True,
-        null=True
+        upload_to='recipes/images/'
     )
     text = models.TextField(
         verbose_name='Описание'
@@ -60,7 +68,13 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    """Содержит ингридиенты и их количество из рецепта."""
+    """
+    Промежуточная модель, связывающая модель рецепт и ингридиент,
+    имеет следующие атрибуты:
+    - recipe
+    - ingredient
+    - amount
+    """
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -80,13 +94,24 @@ class RecipeIngredient(models.Model):
         ordering = ['recipe']
         verbose_name = 'Ингридиенты'
         verbose_name_plural = 'Ингридиенты и их количество'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='recipeingredient'
+            )
+        ]
 
     def __str__(self):
         return f'{self.recipe} - {self.ingredient} {self.amount}'
 
 
 class RecipeTag(models.Model):
-    """Содержит теги рецепта."""
+    """
+    Промежуточная модель, связывающая модель рецепт и тег,
+    имеет следующие атрибуты:
+    - recipe
+    - tag
+    """
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -102,13 +127,23 @@ class RecipeTag(models.Model):
         ordering = ['recipe']
         verbose_name = 'Тэги'
         verbose_name_plural = 'Теги рецептов'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'tag'],
+                name='recipetag'
+            )
+        ]
 
     def __str__(self):
         return f'{self.recipe} - {self.tag}'
 
 
 class FavoriteRecipe(models.Model):
-    """Содержит избранный рецепт."""
+    """
+    Создает объект избраного рецепта со следующими атрибутами:
+    - user
+    - recipe
+    """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -126,13 +161,23 @@ class FavoriteRecipe(models.Model):
         ordering = ['user']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Избранные рецепты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='favoriterecipe'
+            )
+        ]
 
     def __str__(self):
         return self.user
 
 
 class ShoppingCart(models.Model):
-    """Содержит рецепт, добавленный пользователем в список покупок."""
+    """
+    Создает объект списка покупок со следующими атрибутами:
+    - user
+    - recipe
+    """
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -150,6 +195,12 @@ class ShoppingCart(models.Model):
         ordering = ['user']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Списки покупок'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'],
+                name='shoppingcart'
+            )
+        ]
 
     def __str__(self):
         return f'{self.user} - {self.recipe}'
