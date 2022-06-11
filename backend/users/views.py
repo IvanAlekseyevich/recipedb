@@ -12,8 +12,7 @@ class SubscriptionsApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
-        user = request.user
-        authors = User.objects.filter(subscribers__subscriber=user)
+        authors = User.objects.filter(subscribers__subscriber=request.user)
         serializer = serializers.SubscriptionsSerializer(
             authors,
             many=True,
