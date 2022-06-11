@@ -10,7 +10,7 @@ class RecipeIngredientInline(admin.StackedInline):
 
 class RecipeTagInline(admin.StackedInline):
     model = models.Recipe.tags.through
-    extra = 1
+    extra = 0
 
 
 @admin.register(models.Recipe)
