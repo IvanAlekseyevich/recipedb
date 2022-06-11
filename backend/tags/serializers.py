@@ -4,7 +4,7 @@ from tags.models import Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Возвращает список тегов, либо выбранный тег."""
+    """Возвращает список тегов."""
 
     class Meta:
         model = Tag
