@@ -6,25 +6,12 @@ from ingredients.models import Ingredient
 from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, RecipeTag, ShoppingCart
 from tags.models import Tag
 from tags.serializers import TagSerializer
-from users.models import Subscription
+from users.serializers import CustomUserSerializer
 
 User = get_user_model()
 
 
-class RecipesUserSerializer(serializers.ModelSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = ('email', 'id', 'username', 'first_name', 'last_name', 'is_subscribed')
-
-    def get_is_subscribed(self, obj):
-        request_user = self.context.get('request').user.id
-        queryset = Subscription.objects.filter(author=obj.id, subscriber=request_user).exists()
-        return queryset
-
-
-class RecipeIngredientSerializer(serializers.ModelSerializer):
+class IngredientInRecipeSerializer(serializers.ModelSerializer):
     """Возвращает ингридиент, его единицу измерения и количество в рецепте."""
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
@@ -35,11 +22,11 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
-class RecipeSerializer(serializers.ModelSerializer):
+class RecipeListSerializer(serializers.ModelSerializer):
     """Возвращает рецепт, либо список рецептов."""
     tags = TagSerializer(many=True)
-    author = RecipesUserSerializer()
-    ingredients = RecipeIngredientSerializer(source="recipeingredient_set", many=True)
+    author = CustomUserSerializer()
+    ingredients = IngredientInRecipeSerializer(source="recipeingredient_set", many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -79,7 +66,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class IngridCreateSerializer(serializers.ModelSerializer):
-    """Необходим для десериализации рецепта."""
+    """Создает ингридиеты и их количество в рецепте."""
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(write_only=True, min_value=1)
 
@@ -88,7 +75,7 @@ class IngridCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'amount')
 
 
-class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
+class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     """Создает и изменяет рецепт."""
     ingredients = IngridCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
@@ -109,7 +96,7 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         """Изменяет вывод созданного рецепта."""
-        return RecipeSerializer(instance, context=self.context).data
+        return RecipeListSerializer(instance, context=self.context).data
 
     def create(self, validated_data):
         """Создает рецепт."""
@@ -140,15 +127,6 @@ class RecipeCreateOrEditSerializer(serializers.ModelSerializer):
             RecipeTag.objects.create(recipe=instance, tag=tag)
         instance.save()
         return instance
-
-
-class ShortRecipeSerializer(serializers.ModelSerializer):
-    """Выводит укороченый список свойств рецепта."""
-    image = serializers.URLField
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
