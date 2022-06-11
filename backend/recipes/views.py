@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from recipes import serializers
 from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, ShoppingCart
 from recipes.permissions import IsAuthorOrStaffOrReadOnly
+from users.serializers import RecipeMinifiedSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -38,17 +39,15 @@ class FavoriteRecipeApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
-            new_favorite = FavoriteRecipe.objects.create(user=user, recipe=recipe)
-            new_favorite.save()
-            serializer = serializers.ShortRecipeSerializer(recipe)
+            FavoriteRecipe.objects.create(user=user, recipe=recipe)
+            serializer = RecipeMinifiedSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if FavoriteRecipe.objects.filter(user=user, recipe=recipe).exists():
-            old_favorite = FavoriteRecipe.objects.get(user=user, recipe=recipe)
-            old_favorite.delete()
+            FavoriteRecipe.objects.get(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(
@@ -70,17 +69,15 @@ class ShoppingCartApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         else:
-            new_shoping = ShoppingCart.objects.create(user=user, recipe=recipe)
-            new_shoping.save()
-            serializer = serializers.ShortRecipeSerializer(recipe)
+            ShoppingCart.objects.create(user=user, recipe=recipe)
+            serializer = RecipeMinifiedSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
-            old_shoping = ShoppingCart.objects.get(user=user, recipe=recipe)
-            old_shoping.delete()
+            ShoppingCart.objects.get(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(
