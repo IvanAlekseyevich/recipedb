@@ -1,20 +1,20 @@
 version: '3.3'
 services:
-  db:
+  PostgreSQL:
     image: postgres:14.3-alpine
     volumes:
       - db_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
 
-  backend:
+  Django:
     image: pozarnik/foodgram:latest
     restart: always
     volumes:
       - ./static:/app/static/
       - ./media:/app/media/
     depends_on:
-      - db
+      - PostgreSQL
     env_file:
       - ./.env
 
