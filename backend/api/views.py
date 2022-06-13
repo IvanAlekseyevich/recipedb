@@ -4,10 +4,10 @@ from rest_framework import filters, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from recipes import serializers
+from api import serializers
+from api.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
 from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
-from recipes.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
 from users.serializers import RecipeMinifiedSerializer
 
 
