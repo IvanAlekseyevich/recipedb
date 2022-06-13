@@ -6,11 +6,13 @@ from recipes import models
 class RecipeIngredientInline(admin.StackedInline):
     model = models.Recipe.ingredients.through
     extra = 0
+    min_num = 1
 
 
 class RecipeTagInline(admin.StackedInline):
     model = models.Recipe.tags.through
     extra = 0
+    min_num = 1
 
 
 @admin.register(models.Ingredient)
