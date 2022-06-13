@@ -22,20 +22,16 @@ from rest_framework import permissions
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('djoser.urls.authtoken')),
-    path('api/ingredients/', include('ingredients.urls', namespace='ingredients')),
-    path('api/recipes/', include('recipes.urls', namespace='recipes')),
-    path('api/tags/', include('tags.urls', namespace='tags')),
-    path('api/users/', include('users.urls', namespace='users')),
+    path('api/', include('api.urls', namespace='api')),
 ]
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Cats API",
+        title="Foodgram API",
         default_version='v1',
-        description="Документация для приложения cats проекта Kittygram",
-        # terms_of_service="URL страницы с пользовательским соглашением",
-        contact=openapi.Contact(email="admin@kittygram.ru"),
-        license=openapi.License(name="BSD License"),
+        description="Документация для приложения api проекта foodgram",
+        contact=openapi.Contact(email="admin@foodgram.ru"),
+        license=openapi.License(name="MIT License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
