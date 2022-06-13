@@ -24,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', default='django-insecure-2)5hrlnm7eu_wc01&w8ucleo(v1k3w(p+$3*s#itazd^&egf0m')
+SECRET_KEY = os.getenv('SECRET_KEY') or 'django-insecure-2)5hrlnm7eu_wc01&w8ucleo(v1k3w(p+$3*s#itazd^&egf0m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', default=True)
+DEBUG = os.getenv('DEBUG') or True
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS') or ['*']
 
 # Application definition
 
@@ -88,14 +88,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # 'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        # 'NAME': os.getenv('DB_NAME', default='postgres'),
-        # 'USER': os.getenv('POSTGRES_USER', default='postgres'),
-        # 'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        # 'HOST': os.getenv('DB_HOST', default='db'),
-        # 'PORT': os.getenv('DB_PORT', default=5432)
+        'ENGINE': os.environ.get('DB_ENGINE') or 'django.db.backends.sqlite3',
+        'NAME': os.environ.get('DB_NAME') or os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 
