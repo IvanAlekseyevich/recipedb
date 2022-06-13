@@ -1,13 +1,32 @@
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions, status, viewsets
+from rest_framework import filters, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from recipes import serializers
-from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, ShoppingCart
-from recipes.permissions import IsAuthorOrStaffOrReadOnly
+from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
+from recipes.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
 from users.serializers import RecipeMinifiedSerializer
+
+
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    """Возвращает список ингредиентов с возможностью поиска по имени."""
+    queryset = Ingredient.objects.all()
+    serializer_class = serializers.IngredientSerializer
+    permission_classes = [ReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    pagination_class = None
+    search_fields = ('^name',)
+
+
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    """Возвращает список тегов."""
+    queryset = Tag.objects.all()
+    serializer_class = serializers.TagSerializer
+    permission_classes = [ReadOnly]
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

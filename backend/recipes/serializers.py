@@ -2,13 +2,27 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from ingredients.models import Ingredient
-from recipes.models import FavoriteRecipe, Recipe, RecipeIngredient, RecipeTag, ShoppingCart
-from tags.models import Tag
-from tags.serializers import TagSerializer
+from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
+                            RecipeTag, ShoppingCart, Tag)
 from users.serializers import CustomUserSerializer
 
 User = get_user_model()
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    """Возвращает список ингридиентов."""
+
+    class Meta:
+        model = Ingredient
+        fields = '__all__'
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Возвращает список тегов."""
+
+    class Meta:
+        model = Tag
+        fields = '__all__'
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
@@ -104,7 +118,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
-            RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'], amount=ingredient['amount'])
+            RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'],
+                                            amount=ingredient['amount'])
         for tag in tags:
             RecipeTag.objects.create(recipe=recipe, tag=tag)
         return recipe
@@ -120,7 +135,8 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         recipe_ingr = RecipeIngredient.objects.filter(recipe=instance)
         recipe_ingr.delete()
         for ingredient in ingredients:
-            RecipeIngredient.objects.create(recipe=instance, ingredient=ingredient['id'], amount=ingredient['amount'])
+            RecipeIngredient.objects.create(recipe=instance, ingredient=ingredient['id'],
+                                            amount=ingredient['amount'])
         tags_recipe = RecipeTag.objects.filter(recipe=instance)
         tags_recipe.delete()
         for tag in tags:

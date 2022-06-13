@@ -13,6 +13,23 @@ class RecipeTagInline(admin.StackedInline):
     extra = 0
 
 
+@admin.register(models.Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'measurement_unit')
+    search_fields = ('name',)
+    list_filter = ('name',)
+    list_editable = ('name', 'measurement_unit')
+    ordering = ('name',)
+
+
+@admin.register(models.Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'color', 'slug')
+    search_fields = ('name', 'slug')
+    list_editable = ('name', 'color', 'slug')
+    ordering = ('name',)
+
+
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientInline, RecipeTagInline)

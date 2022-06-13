@@ -2,10 +2,70 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from ingredients.models import Ingredient
-from tags.models import Tag
-
 User = get_user_model()
+
+
+class Ingredient(models.Model):
+    """
+    Создает объект ингридиент со следующими обязательными атрибутами:
+    - name
+    - measurement_unit
+    """
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=200,
+        db_index=True
+    )
+    measurement_unit = models.CharField(
+        verbose_name='Единицы измерения',
+        max_length=200
+    )
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'],
+                name='ingredient'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.name}, {self.measurement_unit}'
+
+
+class Tag(models.Model):
+    """
+    Создает объект тэг со следующими обязательными уникальными атрибутами:
+    - name
+    - color
+    - slug
+    """
+    name = models.CharField(
+        verbose_name='Название',
+        max_length=200,
+        unique=True
+    )
+    color = models.CharField(
+        verbose_name='Цвет в HEX',
+        max_length=7,
+        unique=True
+    )
+    slug = models.SlugField(
+        verbose_name='Уникальный слаг',
+        max_length=200,
+        unique=True
+    )
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
