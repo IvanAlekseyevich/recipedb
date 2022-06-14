@@ -57,10 +57,9 @@ class FavoriteRecipeApiView(APIView):
                 {"errors": "Вы уже добавили рецепт в избранное."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        else:
-            FavoriteRecipe.objects.create(user=user, recipe=recipe)
-            serializer = RecipeMinifiedSerializer(recipe)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        FavoriteRecipe.objects.create(user=user, recipe=recipe)
+        serializer = RecipeMinifiedSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
@@ -68,11 +67,8 @@ class FavoriteRecipeApiView(APIView):
         if FavoriteRecipe.objects.filter(user=user, recipe=recipe).exists():
             FavoriteRecipe.objects.get(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(
-                {"errors": "У вас нету данного рецепта в избранном."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        return Response(
+            {"errors": "У вас нету данного рецепта в избранном."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ShoppingCartApiView(APIView):
@@ -87,10 +83,9 @@ class ShoppingCartApiView(APIView):
                 {"errors": "Вы уже добавили рецепт в список покупок."},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        else:
-            ShoppingCart.objects.create(user=user, recipe=recipe)
-            serializer = RecipeMinifiedSerializer(recipe)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        ShoppingCart.objects.create(user=user, recipe=recipe)
+        serializer = RecipeMinifiedSerializer(recipe)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, recipe_id):
         user = request.user
@@ -98,11 +93,8 @@ class ShoppingCartApiView(APIView):
         if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
             ShoppingCart.objects.get(user=user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(
-                {"errors": "У вас нету данного рецепта в списке покупок."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        return Response(
+            {"errors": "У вас нету данного рецепта в списке покупок."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DownloadShopping(APIView):
@@ -119,12 +111,10 @@ class DownloadShopping(APIView):
             amount = recipe.amount
             if f'{name} ({measurement_unit})' in ingrid_amount:
                 ingrid_amount[f'{name} ({measurement_unit})'] += amount
-            else:
-                ingrid_amount[f'{name} ({measurement_unit})'] = amount
+            ingrid_amount[f'{name} ({measurement_unit})'] = amount
         shopping_list = []
         for ingridient, amount in ingrid_amount.items():
             shopping_list.append(f'{ingridient} - {amount}\n')
-        shopping_list.sort()
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
         response['Content-Disposition'] = (
             'attachment;' 'filename="shopping_list.txt"'
