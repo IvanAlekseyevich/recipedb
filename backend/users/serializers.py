@@ -18,8 +18,7 @@ class IsSubscribedMixin(serializers.Serializer):
 
     def get_is_subscribed(self, obj):
         request_user = self.context.get('request').user.id
-        subscription = Subscription.objects.filter(author=obj.id, subscriber=request_user).exists()
-        return subscription
+        return Subscription.objects.filter(author=obj.id, subscriber=request_user).exists()
 
 
 class CustomUserSerializer(UserSerializer, IsSubscribedMixin):
@@ -73,5 +72,4 @@ class UserWithRecipesSerializer(serializers.ModelSerializer, IsSubscribedMixin):
 
     def get_recipes_count(self, obj):
         """Добавляет поле с общим количеством рецептов пользователя."""
-        count = obj.recipes.count()
-        return count
+        return obj.recipes.count()
