@@ -168,5 +168,7 @@ DJOSER = {
     },
     'PERMISSIONS': {
         'user_delete': ['rest_framework.permissions.IsAdminUser'],
+        'user': ['api.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['api.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
