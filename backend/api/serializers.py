@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
-                            RecipeTag, ShoppingCart, Tag)
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
+                            RecipeIngredient, RecipeTag, ShoppingCart, Tag)
 from users.serializers import CustomUserSerializer
 
 User = get_user_model()
@@ -66,8 +66,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         текущего пользователя в избранном: true/false.
         """
         request_user = self.context.get('request').user.id
-        queryset = FavoriteRecipe.objects.filter(user=request_user, recipe=obj).exists()
-        return queryset
+        return FavoriteRecipe.objects.filter(user=request_user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         """
@@ -75,8 +74,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         текущего пользователя в списке покупок: true/false.
         """
         request_user = self.context.get('request').user.id
-        queryset = ShoppingCart.objects.filter(user=request_user, recipe=obj).exists()
-        return queryset
+        return ShoppingCart.objects.filter(user=request_user, recipe=obj).exists()
 
 
 class IngridCreateSerializer(serializers.ModelSerializer):

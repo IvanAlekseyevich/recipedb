@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 
 from api import serializers
 from api.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
-from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCart, Tag)
 from users.serializers import RecipeMinifiedSerializer
 
 
