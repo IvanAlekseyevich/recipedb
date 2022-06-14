@@ -40,7 +40,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     """Возвращает рецепт, либо список рецептов."""
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
-    ingredients = IngredientInRecipeSerializer(source="recipeingredient_set", many=True)
+    ingredients = IngredientInRecipeSerializer(source="ingridientamount", many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
