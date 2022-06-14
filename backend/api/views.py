@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.db.models import Sum
 from api import serializers
 from api.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
 from recipes.models import (Ingredient, FavoriteRecipe, Recipe, RecipeIngredient,
@@ -103,20 +103,17 @@ class DownloadShopping(APIView):
 
     def get(self, request):
         user = request.user
-        recipe_list = RecipeIngredient.objects.filter(recipe__shopping__user=user)
-        ingrid_amount = {}
-        for recipe in recipe_list:
-            name = recipe.ingredient.name
-            measurement_unit = recipe.ingredient.measurement_unit
-            amount = recipe.amount
-            if f'{name} ({measurement_unit})' in ingrid_amount:
-                ingrid_amount[f'{name} ({measurement_unit})'] += amount
-            ingrid_amount[f'{name} ({measurement_unit})'] = amount
+        recipe_list = RecipeIngredient.objects.filter(
+            recipe__shopping__user=user
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(amount=Sum('amount'))
         shopping_list = []
-        for ingridient, amount in ingrid_amount.items():
-            shopping_list.append(f'{ingridient} - {amount}\n')
+        for ingredient in recipe_list:
+            name = ingredient['ingredient__name']
+            measurement_unit = ingredient['ingredient__measurement_unit']
+            amount = ingredient['amount']
+            shopping_list.append(f'{name} ({measurement_unit}) - {amount}\n')
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
-        response['Content-Disposition'] = (
-            'attachment;' 'filename="shopping_list.txt"'
-        )
+        response['Content-Disposition'] = ('attachment;' 'filename="shopping_list.txt"')
         return response
