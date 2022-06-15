@@ -64,7 +64,6 @@ DOCKERHUB_USERNAME    # ваш логин на docker.com
 DOCKERHUB_TOKEN       # ваш пароль на docker.com
 SECRET_KEY=           # ключ для генерации хэша Django
 DEBUG=                # значение Debug
-ALLOWED_HOSTS=        # разрешенные хосты
 DB_ENGINE=            # укажите используемую БД
 DB_NAME=              # имя базы данных
 POSTGRES_USER=        # логин для подключения к БД
