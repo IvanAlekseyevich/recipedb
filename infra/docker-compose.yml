@@ -24,6 +24,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - Django
 
   nginx:
     image: nginx:1.22.0-alpine
