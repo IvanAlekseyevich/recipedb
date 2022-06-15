@@ -16,7 +16,7 @@
 
 ## Особенности настройки Docker
 
-- Проект запускается в четырех контейнерах: nginx, PostgreSQL и Django
+- Проект запускается в четырех контейнерах: nginx, PostgreSQL, frontend и Django
 - Обновление образа проекта в Docker Hub
 
 ## Особенности CI & CD
