@@ -113,7 +113,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         """Создает рецепт."""
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        if len(ingredients) == 0 or len(tags)== 0:
+        if len(ingredients) == 0 or len(tags) == 0:
             raise serializers.ValidationError('Заполните все необходимые поля')
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
@@ -131,7 +131,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         instance.image = validated_data.get('image', instance.image)
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        if len(ingredients) == 0 or len(tags)== 0:
+        if len(ingredients) == 0 or len(tags) == 0:
             raise serializers.ValidationError('Заполните все необходимые поля')
         recipe_ingr = RecipeIngredient.objects.filter(recipe=instance)
         recipe_ingr.delete()
