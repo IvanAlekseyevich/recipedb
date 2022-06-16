@@ -1,4 +1,5 @@
 from api import serializers
+from api.filters import RecipeFilter
 from api.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
 from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
@@ -36,8 +37,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """
     queryset = Recipe.objects.all()
     permission_classes = [IsAuthorOrStaffOrReadOnly]
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('tags__slug',)
+    filter_backends = [DjangoFilterBackend]
+    filter_class = RecipeFilter
+    filterset_fields = ('tags',)
 
     def get_serializer_class(self):
         if self.action in ('create', 'update'):
