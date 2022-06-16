@@ -39,7 +39,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
-    filterset_fields = ('tags',)
+    filterset_fields = ('tags', 'author')
 
     def get_serializer_class(self):
         if self.action in ('create', 'update'):
