@@ -33,8 +33,11 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    def favorite(self, obj):
+        return obj.favorite.count()
+
     inlines = (RecipeIngredientInline, RecipeTagInline)
-    list_display = ('name', 'author', 'pub_date')
+    list_display = ('name', 'author', 'favorite', 'pub_date')
     search_fields = ('author', 'name', 'tags')
     list_filter = ('author', 'name', 'tags')
     list_editable = ('name',)
