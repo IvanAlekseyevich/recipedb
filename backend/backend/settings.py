@@ -168,8 +168,8 @@ DJOSER = {
         'user_delete': 'users.serializers.CustomUserDeleteSerializer',
     },
     'PERMISSIONS': {
-        'user_delete': ['rest_framework.permissions.IsAdminUser'],
-        'user': ['api.permissions.IsAuthorOrStaffOrReadOnly'],
-        'user_list': ['api.permissions.IsAuthorOrStaffOrReadOnly'],
+        'user_delete': ['rest_framework.permissions.AllowAny'],
+        'user': ['api.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['api.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
