@@ -6,7 +6,7 @@ from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
-from rest_framework import filters, permissions, status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.serializers import RecipeMinifiedSerializer
@@ -17,9 +17,14 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
     permission_classes = [ReadOnly]
-    filter_backends = (filters.SearchFilter,)
     pagination_class = None
-    search_fields = ('^name',)
+
+    def get_queryset(self):
+        queryset = Ingredient.objects.all()
+        ingridient = self.request.query_params.get('name')
+        if ingridient is not None:
+            return queryset.filter(name__istartswith=ingridient)
+        return queryset
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
