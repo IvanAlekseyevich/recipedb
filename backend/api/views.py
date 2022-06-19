@@ -55,9 +55,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = Recipe.objects.all()
         shopping = self.request.query_params.get('is_in_shopping_cart')
         favorite = self.request.query_params.get('is_favorited')
-        if shopping is not None:
+        if shopping is not None and shopping == 1:
             return queryset.filter(shopping__user=self.request.user)
-        if favorite is not None:
+        if favorite is not None and favorite == 1:
             return queryset.filter(favorite__user=self.request.user)
         return queryset
 
@@ -115,7 +115,7 @@ class ShoppingCartApiView(APIView):
 
 
 class DownloadShopping(APIView):
-    """Выгружает ингридиенты из списка покупок."""
+    """Выгружает ингридиенты из списка покупок в shopping_list.txt."""
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):

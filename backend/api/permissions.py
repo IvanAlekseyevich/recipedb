@@ -2,6 +2,8 @@ from rest_framework import permissions
 
 
 class CurrentUserOrAdminOrReadOnly(permissions.BasePermission):
+    """Permission для djoser, отвечающий за отображение профиля пользователя."""
+
     def has_object_permission(self, request, view, obj):
         user = request.user
         if type(obj) == type(user) and obj == user:
@@ -10,6 +12,8 @@ class CurrentUserOrAdminOrReadOnly(permissions.BasePermission):
 
 
 class IsAuthorOrStaffOrReadOnly(permissions.BasePermission):
+    """Используется для создания, просмотра и изменения рецепта."""
+
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS
                 or request.user.is_authenticated)

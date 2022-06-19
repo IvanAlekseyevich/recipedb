@@ -25,7 +25,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
-    """Возвращает ингридиент, его единицу измерения и количество в рецепте."""
+    """Возвращает ингридиент, его единицу измерения и количество из рецепта."""
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
@@ -77,7 +77,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
 
 class IngridCreateSerializer(serializers.ModelSerializer):
-    """Создает ингридиеты и их количество в рецепте."""
+    """Создает запись в таблице RecipeIngredient."""
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField(write_only=True, min_value=1)
 
@@ -87,7 +87,7 @@ class IngridCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
-    """Создает и изменяет рецепт."""
+    """Создает, либо изменяет рецепт."""
     ingredients = IngridCreateSerializer(many=True)
     tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     image = Base64ImageField()
