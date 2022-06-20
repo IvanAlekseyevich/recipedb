@@ -55,9 +55,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         queryset = Recipe.objects.all()
         shopping = self.request.query_params.get('is_in_shopping_cart')
         favorite = self.request.query_params.get('is_favorited')
-        if shopping is not None and shopping == 1:
+        if shopping is not None:
             return queryset.filter(shopping__user=self.request.user)
-        if favorite is not None and favorite == 1:
+        if favorite is not None:
             return queryset.filter(favorite__user=self.request.user)
         return queryset
 
