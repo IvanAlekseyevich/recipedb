@@ -93,6 +93,13 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     image = Base64ImageField()
     author = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
+    def validate(self, data):
+        ingredients = data.get('ingredients')
+        tags = data.get('tags')
+        if len(ingredients) == 0 or len(tags) == 0:
+            raise serializers.ValidationError('Заполните все необходимые поля')
+        return data
+
     class Meta:
         model = Recipe
         fields = (
@@ -113,8 +120,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         """Создает рецепт."""
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        if len(ingredients) == 0 or len(tags) == 0:
-            raise serializers.ValidationError('Заполните все необходимые поля')
         recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             RecipeIngredient.objects.create(recipe=recipe, ingredient=ingredient['id'],
@@ -131,8 +136,6 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
         instance.image = validated_data.get('image', instance.image)
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        if len(ingredients) == 0 or len(tags) == 0:
-            raise serializers.ValidationError('Заполните все необходимые поля')
         recipe_ingr = RecipeIngredient.objects.filter(recipe=instance)
         recipe_ingr.delete()
         for ingredient in ingredients:
