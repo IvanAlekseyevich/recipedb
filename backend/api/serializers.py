@@ -96,7 +96,7 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = data.get('ingredients')
         tags = data.get('tags')
-        if len(ingredients) == 0 or len(tags) == 0:
+        if len(ingredients) or len(tags):
             raise serializers.ValidationError('Заполните все необходимые поля')
         return data
 
