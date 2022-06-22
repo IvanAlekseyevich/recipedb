@@ -1,6 +1,6 @@
 from api import serializers
 from api.filters import RecipeFilter
-from api.permissions import IsAuthorOrStaffOrReadOnly, ReadOnly
+from api.permissions import IsAuthorOrStaffOrReadOnlyPermission, ReadOnlyPermission
 from django.db.models import Sum
 from django.shortcuts import HttpResponse, get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,7 +16,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Возвращает список ингредиентов с возможностью поиска по имени."""
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
-    permission_classes = [ReadOnly]
+    permission_classes = [ReadOnlyPermission]
     pagination_class = None
 
     def get_queryset(self):
@@ -31,7 +31,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Возвращает список тегов."""
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
-    permission_classes = [ReadOnly]
+    permission_classes = [ReadOnlyPermission]
     pagination_class = None
 
 
@@ -41,7 +41,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     создает/изменяет/удаляет рецепт.
     """
     queryset = Recipe.objects.all()
-    permission_classes = [IsAuthorOrStaffOrReadOnly]
+    permission_classes = [IsAuthorOrStaffOrReadOnlyPermission]
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipeFilter
     filterset_fields = ('tags', 'author')
