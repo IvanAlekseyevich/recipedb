@@ -1,17 +1,7 @@
 from rest_framework import permissions
 
 
-class CurrentUserOrAdminOrReadOnly(permissions.BasePermission):
-    """Permission для djoser, отвечающий за отображение профиля пользователя."""
-
-    def has_object_permission(self, request, view, obj):
-        user = request.user
-        if type(obj) == type(user) and obj == user:
-            return True
-        return request.method in permissions.SAFE_METHODS or user.is_staff
-
-
-class IsAuthorOrStaffOrReadOnly(permissions.BasePermission):
+class IsAuthorOrStaffOrReadOnlyPermission(permissions.BasePermission):
     """Используется для создания, просмотра и изменения рецепта."""
 
     def has_permission(self, request, view):
@@ -25,6 +15,6 @@ class IsAuthorOrStaffOrReadOnly(permissions.BasePermission):
                 or request.user.is_staff)
 
 
-class ReadOnly(permissions.BasePermission):
+class ReadOnlyPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.method in permissions.SAFE_METHODS
