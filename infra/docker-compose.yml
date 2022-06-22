@@ -22,8 +22,6 @@ services:
     image: pozarnik/foodgram_front:latest
     volumes:
       - ./frontend/:/app/result_build/
-    depends_on:
-      - backend
 
   nginx:
     image: nginx:1.22.0-alpine
@@ -36,7 +34,7 @@ services:
       - ./static:/var/html/static/
       - ./media:/var/html/media/
     depends_on:
-      - frontend
+      - backend
 
 volumes:
   db_value:
