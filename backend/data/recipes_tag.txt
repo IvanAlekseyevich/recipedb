@@ -1,0 +1,4 @@
+1|Завтрак|#008000|breakfast
+2|Обед|#FFFF00|lunch
+3|Полдник|#ffd700|brunch
+4|Ужин|#FF0000|dinner
