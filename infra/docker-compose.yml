@@ -35,6 +35,7 @@ services:
       - ./media:/var/html/media/
     depends_on:
       - backend
+      - frontend
 
 volumes:
   db_value:
