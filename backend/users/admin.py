@@ -10,6 +10,16 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email', 'first_name', 'last_name')
     list_filter = ('username', 'email')
     list_display_links = ('username',)
+    fieldsets = (
+        (None, {
+            'fields': ('date_joined' ,'username', 'email', 'first_name', 'last_name')
+        }),
+        ('Расширенные настройки', {
+            'classes': ('collapse',),
+            'fields': ('is_active', 'is_staff', 'is_superuser'),
+        }),
+    )
+    readonly_fields = ('date_joined',)
 
 
 @admin.register(Subscription)
