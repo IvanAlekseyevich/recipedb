@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display_links = ('username',)
     fieldsets = (
         (None, {
-            'fields': ('date_joined', 'username', 'email', 'first_name', 'last_name')
+            'fields': ('date_joined', 'username', 'email', 'first_name', 'last_name', 'password')
         }),
         ('Расширенные настройки', {
             'classes': ('collapse',),
