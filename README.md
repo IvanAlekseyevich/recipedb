@@ -1,9 +1,8 @@
-[![Foodgram workflow push](https://github.com/pozarnik/foodgram-project-react/actions/workflows/foodgram_workflow_push.yml/badge.svg)](https://github.com/pozarnik/foodgram-project-react/actions/workflows/foodgram_workflow_push.yml) [![Foodgram workflow merged](https://github.com/pozarnik/foodgram-project-react/actions/workflows/foodgram_workflow_merged.yml/badge.svg)](https://github.com/pozarnik/foodgram-project-react/actions/workflows/foodgram_workflow_merged.yml)
-# Foodgram
+# RecipeDB
 
-***Foodgram - сайт для размещения кулинарных рецептов***
+***RecipeDB - сайт для размещения кулинарных рецептов***
 
-## Возможности проекта Foodgram
+## Возможности проекта RecipeDB
 
 - Реализована регистрация пользователей через djoser
 - Вход на сайт осуществляется с помощью электронной почты и пароля
@@ -73,7 +72,7 @@ DB_HOST=              # название сервиса (контейнера) �
 DB_PORT=              # порт для подключения к БД 
 ```
 
-## Документации проекта Foodgram
+## Документации проекта RecipeDB
 
 При запущенном проекте откройте ссылку в браузере:
 
